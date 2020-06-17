@@ -1,8 +1,8 @@
-from datetime import datetime
+import datetime
 import json
 from cerberus import Validator
 from flask import request, Response, jsonify
-from flask_jwt_extended import create_access_token, create_refresh_token
+from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required
 from mongoengine import DoesNotExist
 
 from src import app
@@ -38,28 +38,20 @@ def invalid_route() -> Response:
 
 @app.route('/login', methods=['POST'])
 def login():
-    print("=======================================aspidufjohasiudhf")
     data = request.get_json()
     try:
         user = User.objects(email=data.get('email')).get()
-        print("========================bug====================")
-        print(user.email)
-        print("===========================endbug=================")
+        auth_success = user.check_pwd(data.get('password'))
+        if not auth_success:
+            return unauthorized()
+        expiry = datetime.timedelta(days=5)
+        access_token = create_access_token(identity=str(user.id), expires_delta=expiry)
+        refresh_token = create_refresh_token(identity=str(user.id))
+        return jsonify({'result': {'access_token': access_token,
+                                   'refresh_token': refresh_token,
+                                   'logged_in_as': f"{user.email}"}})
     except DoesNotExist:
         print("USER NOT FOUND")
-
-
-    # auth_success = user.check_pwd(data.get('password'))
-    # if not auth_success:
-    #     return unauthorized()
-    #
-    # expiry = datetime.timedelta(days=5)
-    # access_token = create_access_token(identity=str(user.id), expires_delta=expiry)
-    # refresh_token = create_refresh_token(identity=str(user.id))
-    # return jsonify({'result': {'access_token': access_token,
-    #                            'refresh_token': refresh_token,
-    #                            'logged_in_as': f"{user.email}"}})
-    return jsonify(ok=True)
 
 
 @app.route("/professores", methods=['POST'])
@@ -77,3 +69,9 @@ def store():
     professor = User.from_json(json.dumps(request_data))
     professor.save()
     return jsonify(professor), 200
+
+
+@app.route('/required')
+@jwt_required
+def test():
+    return "TANTANTAAAAAN"
