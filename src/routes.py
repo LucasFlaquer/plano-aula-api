@@ -6,34 +6,12 @@ from flask_jwt_extended import create_access_token, create_refresh_token, jwt_re
 from mongoengine import DoesNotExist
 
 from src import app
+from src.controllers.UserController import UserController
+from src.functions.errors import unauthorized
 from src.models.User import User
 
 
-def unauthorized() -> Response:
-    output = {"error":
-                  {"msg": "401 error: The email or password provided is invalid."}
-              }
-    resp = jsonify({'result': output})
-    resp.status_code = 401
-    return resp
-
-
-def forbidden() -> Response:
-    output = {"error":
-                  {"msg": "403 error: The current user is not authorized to take this action."}
-              }
-    resp = jsonify({'result': output})
-    resp.status_code = 403
-    return resp
-
-
-def invalid_route() -> Response:
-    output = {"error":
-                  {"msg": "404 error: This route is currently not supported. See API documentation."}
-              }
-    resp = jsonify({'result': output})
-    resp.status_code = 404
-    return resp
+userControler = UserController()
 
 
 @app.route('/login', methods=['POST'])
@@ -54,24 +32,33 @@ def login():
         print("USER NOT FOUND")
 
 
-@app.route("/professores", methods=['POST'])
-def store():
-    request_data = request.get_json()
-    schema = {
-        'email': {'type': 'string'},
-        'password': {'type': 'string'},
-        'name': {'type': 'string'}
-    }
-    v = Validator(schema)
-    if not v.validate(request_data):
-        return jsonify(erro="dados invalidos"), 400
-    print(v.validate(request_data))
-    professor = User.from_json(json.dumps(request_data))
-    professor.save()
-    return jsonify(professor), 200
+# @jwt_required
+app.add_url_rule('/users', view_func=userControler.index, methods=['GET'])
+app.add_url_rule('/users', view_func=userControler.store, methods=['POST'])
+app.add_url_rule('/users/<id>', view_func=userControler.show, methods=['GET'])
+app.add_url_rule('/users/me', view_func=userControler.loggedUser, methods=['GET'])
+#update de usuario logado
+app.add_url_rule('/users/update', view_func=userControler.update, methods=['PUT'])
+app.add_url_rule('/users/<id>', view_func=userControler.destroy, methods=['DELETE'])
 
-
-@app.route('/required')
-@jwt_required
-def test():
-    return "TANTANTAAAAAN"
+# @app.route("/professores", methods=['POST'])
+# def store():
+#     request_data = request.get_json()
+#     schema = {
+#         'email': {'type': 'string'},
+#         'password': {'type': 'string'},
+#         'name': {'type': 'string'}
+#     }
+#     v = Validator(schema)
+#     if not v.validate(request_data):
+#         return jsonify(erro="dados invalidos"), 400
+#     print(v.validate(request_data))
+#     professor = User.from_json(json.dumps(request_data))
+#     professor.save()
+#     return jsonify(professor), 200
+#
+#
+# @app.route('/required')
+# @jwt_required
+# def test():
+#     return "TANTANTAAAAAN"
