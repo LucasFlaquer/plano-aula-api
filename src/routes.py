@@ -1,18 +1,17 @@
 import datetime
-import json
-from cerberus import Validator
 from flask import request, Response, jsonify
 from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required
 from mongoengine import DoesNotExist
 
 from src import app
+from src.controllers.CursoController import CursoController
 from src.controllers.UserController import UserController
 from src.functions.errors import unauthorized
 from src.models.User import User
 
 
 userControler = UserController()
-
+cursoController = CursoController()
 
 @app.route('/login', methods=['POST'])
 def login():
@@ -49,24 +48,15 @@ app.add_url_rule('/users/me', view_func=userControler.loggedUser, methods=['GET'
 app.add_url_rule('/users/update', view_func=userControler.update, methods=['PUT'])
 app.add_url_rule('/users/<id>', view_func=userControler.destroy, methods=['DELETE'])
 
-# @app.route("/professores", methods=['POST'])
-# def store():
-#     request_data = request.get_json()
-#     schema = {
-#         'email': {'type': 'string'},
-#         'password': {'type': 'string'},
-#         'name': {'type': 'string'}
-#     }
-#     v = Validator(schema)
-#     if not v.validate(request_data):
-#         return jsonify(erro="dados invalidos"), 400
-#     print(v.validate(request_data))
-#     professor = User.from_json(json.dumps(request_data))
-#     professor.save()
-#     return jsonify(professor), 200
-#
-#
-# @app.route('/required')
-# @jwt_required
-# def test():
-#     return "TANTANTAAAAAN"
+
+########## CRUD DE CURSOS ################
+app.add_url_rule('/cursos', view_func=CursoController.store, methods=['POST'])
+
+# @app.route('/cursos', methods=['POST'])
+# def addCurso():
+#     data = request.get_json()
+#     print(data)
+#     curso = Curso
+#     print(curso.nome)
+#     print(curso.coordenador)
+#     return jsonify(ok=True)

@@ -7,9 +7,14 @@ from mongoengine import DoesNotExist, ValidationError, errors
 
 from src.functions.errors import forbidden
 from src.models.User import User
+from src.services.UserService import UserService
 
 
 class UserController:
+
+    service = UserService
+
+
     @jwt_required
     def index(self):
         # Listar todos os usuarios
@@ -34,16 +39,13 @@ class UserController:
 
     @jwt_required
     def show(self, id):
-        try:
-            user = User.objects(id=id).get()
-            return jsonify(user)
-        except (User.DoesNotExist, ValidationError):
-            output = {"error":
-                          {"msg": "500 error: User not found."}
-                      }
+        user = self.service.getUserById(id)
+        if user is None:
+            output = {"error": {"msg": "500 error: User not found."} }
             resp = jsonify({'result': output})
             resp.status_code = 500
             return resp
+        return jsonify(user)
 
     @jwt_required
     def loggedUser(self):
