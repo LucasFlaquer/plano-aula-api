@@ -22,14 +22,20 @@ def login():
         auth_success = user.check_pwd(data.get('password'))
         if not auth_success:
             return unauthorized()
-        expiry = datetime.timedelta(days=5)
+        expiry = datetime.timedelta(minutes=5)
         access_token = create_access_token(identity=str(user.id), expires_delta=expiry)
         refresh_token = create_refresh_token(identity=str(user.id))
-        return jsonify({'result': {'access_token': access_token,
-                                   'refresh_token': refresh_token,
-                                   'logged_in_as': f"{user.email}"},
-                                   'name':f"{user.name}"
-                                   })
+        return jsonify(
+            access_token=access_token,
+            logged_in_as=user.email,
+            name=user.name
+        )
+        # return jsonify({
+        #     'result': {'access_token': access_token,
+        #                            'refresh_token': refresh_token,
+        #                            'logged_in_as': f"{user.email}"},
+        #                            'name':f"{user.name}"
+        #                            })
     except DoesNotExist:
         print("USER NOT FOUND")
 
