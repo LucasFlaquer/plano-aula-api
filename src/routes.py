@@ -50,7 +50,8 @@ app.add_url_rule('/users/<id>', view_func=userControler.destroy, methods=['DELET
 
 
 ########## CRUD DE CURSOS ################
-app.add_url_rule('/cursos', view_func=CursoController.store, methods=['POST'])
+app.add_url_rule('/cursos', view_func=CursoController.store_curso, methods=['POST'])
+app.add_url_rule('/cursos/<id>', view_func=CursoController.show_curso, methods=['GET'])
 
 # @app.route('/cursos', methods=['POST'])
 # def addCurso():

@@ -4,7 +4,7 @@ from src.models.User import User
 
 
 class Curso(Document):
-    nome: StringField()
+    nome = StringField(required=True)
     # diurno vespertino e noturno (D V N)
-    turno: StringField(max_length=1)
-    coordenador: ReferenceField(User)
+    turno = StringField(max_length=1, required=True)
+    coordenador = ReferenceField(User)
