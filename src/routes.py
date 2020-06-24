@@ -9,9 +9,9 @@ from src.controllers.UserController import UserController
 from src.functions.errors import unauthorized
 from src.models.User import User
 
-
 userControler = UserController()
 cursoController = CursoController()
+
 
 @app.route('/login', methods=['POST'])
 def login():
@@ -44,20 +44,14 @@ app.add_url_rule('/users', view_func=userControler.index, methods=['GET'])
 app.add_url_rule('/users', view_func=userControler.store, methods=['POST'])
 app.add_url_rule('/users/<id>', view_func=userControler.show, methods=['GET'])
 app.add_url_rule('/users/me', view_func=userControler.loggedUser, methods=['GET'])
-#update de usuario logado
+# update de usuario logado
 app.add_url_rule('/users/update', view_func=userControler.update, methods=['PUT'])
 app.add_url_rule('/users/<id>', view_func=userControler.destroy, methods=['DELETE'])
 
-
-########## CRUD DE CURSOS ################
+# CRUD DE CURSORS
+app.add_url_rule('/cursos', view_func=CursoController.listAllCursos, methods=['GET'])
 app.add_url_rule('/cursos', view_func=CursoController.store_curso, methods=['POST'])
 app.add_url_rule('/cursos/<id>', view_func=CursoController.show_curso, methods=['GET'])
+app.add_url_rule('/curos/<id>', view_func=CursoController.update_curso, methods=['PUT'])
+app.add_url_rule('/cursos/<id>', view_func=CursoController.delete_curso, methods=['DELETE'])
 
-# @app.route('/cursos', methods=['POST'])
-# def addCurso():
-#     data = request.get_json()
-#     print(data)
-#     curso = Curso
-#     print(curso.nome)
-#     print(curso.coordenador)
-#     return jsonify(ok=True)

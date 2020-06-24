@@ -10,6 +10,10 @@ from mongoengine import *
 
 class CursoController:
 
+    def listAllCursos(self):
+        cursos = CursoService.getAll()
+        return jsonify(cursos)
+
     @staticmethod
     def store_curso():
         data = request.get_json()
@@ -28,7 +32,8 @@ class CursoController:
         curso.save()
         return jsonify(curso)
 
-    def show_curso(self, id):
+    @staticmethod
+    def show_curso(id):
         curso = CursoService.getCursoById(id=id)
         if curso is None:
             output = {"error": {"msg": "500 error: Curso not found."}}
@@ -38,7 +43,8 @@ class CursoController:
 
         return curso
 
-    def update_curso(self, id):
+    @staticmethod
+    def update_curso(id):
         request_data = request.get_json()
         schema = {
             'nome': {'type': 'string'},
@@ -70,7 +76,8 @@ class CursoController:
 
         return jsonify(curso)
 
-    def delete_curso(self, id):
+    @staticmethod
+    def delete_curso(id):
         curso: Curso = CursoService.getCursoById(id)
         if curso is None:
             output = {"error": {"msg": "500 error: Curso not found."}}
