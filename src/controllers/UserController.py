@@ -14,30 +14,50 @@ class UserController:
 
     service = UserService
 
-
-    @jwt_required
     def index(self):
         # Listar todos os usuarios
         users = User.objects()
         return jsonify(users)
 
-    @jwt_required
+
     def store(self):
         request_data = request.get_json()
         schema = {
             'email': {'type': 'string'},
             'password': {'type': 'string'},
-            'name': {'type': 'string'}
+            'name': {'type': 'string'},
+            'access': {'required': False, 'type': 'dict', 'schema': {
+                'admin': {'type': 'boolean'},
+                'nde': {'type': 'boolean'},
+                'coordenador': {'type': 'boolean'},
+                'qualidade': {'type': 'boolean'}
+            }}
         }
         v = Validator(schema)
         if not v.validate(request_data):
-            return jsonify(erro="dados invalidos"), 400
-        print(v.validate(request_data))
-        user = User.from_json(json.dumps(request_data))
+            return jsonify(
+                erro="dados invalidos",
+                message=v.errors
+            ), 400
+
+        # user = User.from_json(json.dumps(request_data))
+        # print(User.access.admin)
+
+
+        if request_data.get('access') is None:
+            user = User()
+            user.email = request_data.get('email')
+            user.password = request_data.get('password')
+            user.name = request_data.get('name')
+        else:
+            user = User.from_json(json.dumps(request_data))
+
         user.save()
+
         return jsonify(user), 200
 
-    @jwt_required
+    #@jwt_required
+    #@staticmethod
     def show(self, id):
         user = self.service.getUserById(id)
         if user is None:

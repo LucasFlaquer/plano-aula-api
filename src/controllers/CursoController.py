@@ -8,7 +8,9 @@ from src.services.CursoService import CursoService
 from src.services.UserService import UserService
 from mongoengine import *
 
+
 class CursoController:
+
 
     def listAllCursos(self):
         cursos = CursoService.getAll()

@@ -16,8 +16,4 @@ class PlanoAula(Document):
     proferssor = ReferenceField(User)
     disciplina = StringField()
     curso = StringField()
-    ementa = StringField()
-    conteudo = ListField(StringField())
-    competencias = ListField(StringField())
-    objetivos = ListField(StringField())
     cronograma = ListField(EmbeddedDocumentField(Aula))

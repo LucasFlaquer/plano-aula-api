@@ -1,9 +1,13 @@
 from flask_bcrypt import generate_password_hash, check_password_hash
-from mongoengine import Document, StringField, EmailField, EmbeddedDocument, BooleanField
+from mongoengine import EmbeddedDocument, BooleanField, Document, EmailField, StringField, ListField, ReferenceField
+
+from src.models.Disciplina import Disciplina, EmbeddedDocumentField
 
 
 class Access(EmbeddedDocument):
     coordenador = BooleanField(default=False)
+    nde = BooleanField(default=False)
+    qualidade = BooleanField(default=False)
     admin = BooleanField(default=False)
 
 
@@ -11,19 +15,10 @@ class User(Document):
     email = EmailField(required=True, unique=True)
     name = StringField()
     password = StringField(required=True, min_length=6, regex=None)
-    access = EmbeddedDocument(Access, default=Access(coordenador=False, admin=False))
+    access = EmbeddedDocumentField(Access, default=Access(coordenador=False, nde=False, qualidade=False, admin=False))
+    disciplinas_ministradas = ListField(ReferenceField(Disciplina), default=[])
 
     def check_pwd(self, pwd):
         if pwd == self.password:
             return True
-    # def generate_pw_hash(self):
-    #     self.password = generate_password_hash(password=self.password).decode('utf-8')
-    #
-    # generate_pw_hash.__doc__ = generate_password_hash.__doc__
-    #
-    # def check_pw_hash(self, password: str) -> bool:
-    #     print("==============bug")
-    #     return check_password_hash(pw_hash=self.password, password=password)
-    #
-    # # Use documentation from BCrypt for password hashing
-    # check_pw_hash.__doc__ = check_password_hash.__doc__
+
