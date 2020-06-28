@@ -18,21 +18,23 @@ class CursoController:
         cursos = CursoService.getAll()
         cursoList=[]
         for curso in cursos:
-            if curso.coordenador == None:
-                coord = 'Nenhum coordenador cadastrado'
+
+            if not curso.coordenador:
+                coord = None
             else:
-                coord = curso.coordenador.name
+                coord = dict(id=str(curso.coordenador.pk), nome=curso.coordenador.name)
+
             d_curso = dict(
                 id=str(curso.pk),
                 nome=curso.nome,
                 turno=curso.turno,
-                coordenador=curso.coordenador
+                coordenador=coord
             )
             cursoList.append(d_curso)
 
         return jsonify(cursoList)
 
-    @jwt_required
+
     def storeCurso(self):
         data = request.get_json()
         schema = {

@@ -14,15 +14,15 @@ class Curso(Document):
     disciplinas = ListField(ReferenceField(Disciplina), default=[])
 
     #@property
-    def json(self):
-        if self.coordenador == None:
-            coord = 'Nenhum coordenador cadastrado'
-        else:
-            coord = self.coordenador.name
-        curso_dict = {
-            "nome": self.nome,
-            "turno": self.turno,
-            "coordenador": coord,
-            "disciplinas": self.disciplinas
-        }
-        return json.dumps(curso_dict)
+    # def to_dict(self):
+    #     if self.coordenador == None:
+    #         coord = 'Nenhum coordenador cadastrado'
+    #     else:
+    #         coord = self.coordenador.name
+    #     curso_dict = {
+    #         "nome": self.nome,
+    #         "turno": self.turno,
+    #         "coordenador": coord,
+    #         "disciplinas": self.disciplinas
+    #     }
+    #     return json.dumps(curso_dict)
