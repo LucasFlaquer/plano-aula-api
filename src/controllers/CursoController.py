@@ -1,7 +1,9 @@
+import json
 from typing import Optional, Any
 
 from cerberus import Validator
 from flask import request, jsonify
+from flask_jwt_extended import jwt_required
 
 from src.models.Curso import Curso
 from src.services.CursoService import CursoService
@@ -12,30 +14,64 @@ from mongoengine import *
 class CursoController:
 
 
-    def listAllCursos(self):
+    def indexCursos(self):
         cursos = CursoService.getAll()
-        return jsonify(cursos)
+        cursoList=[]
+        for curso in cursos:
+            if curso.coordenador == None:
+                coord = 'Nenhum coordenador cadastrado'
+            else:
+                coord = curso.coordenador.name
+            d_curso = dict(
+                id=str(curso.pk),
+                nome=curso.nome,
+                turno=curso.turno,
+                coordenador=curso.coordenador
+            )
+            cursoList.append(d_curso)
 
-    @staticmethod
-    def store_curso():
+        return jsonify(cursoList)
+
+    @jwt_required
+    def storeCurso(self):
         data = request.get_json()
-
-        coordenador = UserService.getUserById(data.get('user_id'))
-        if coordenador is None:
-            output = {"error": {"msg": "500 error: Professor not found."}}
-            resp = jsonify({'result': output})
-            resp.status_code = 500
-            return resp
+        schema = {
+            'nome':{'required': True, 'type': 'string'},
+            'turno': {'type': 'string'},
+            'user_id': {'type': 'string', 'required': False},
+            'disciplinas': {'type': ['string', 'list']}
+        }
+        v = Validator(schema)
+        if not v.validate(data):
+            return jsonify(
+                erro="dados invalidos",
+                message=v.errors
+            ), 400
 
         curso = Curso()
         curso.nome = data.get('nome')
         curso.turno = data.get('turno')
-        curso.coordenador = coordenador
+
+        if data.get('user_id'):
+            coordenador = UserService.getUserById(data.get('user_id'))
+
+            if coordenador is None:
+                output = {"error": {"msg": "500 error: Professor not found."}}
+                resp = jsonify({'result': output})
+                resp.status_code = 500
+                return resp
+            else:
+                curso.coordenador = coordenador
+
+        # for disc_id in data.get('disciplinas'):
+    #           disc = DiscService.getDiscById(disc_id)
+        #       ....
+
         curso.save()
         return jsonify(curso)
 
-    @staticmethod
-    def show_curso(id):
+
+    def showCurso(id):
         curso = CursoService.getCursoById(id=id)
         if curso is None:
             output = {"error": {"msg": "500 error: Curso not found."}}
@@ -45,8 +81,7 @@ class CursoController:
 
         return curso
 
-    @staticmethod
-    def update_curso(id):
+    def updateCurso(id):
         request_data = request.get_json()
         schema = {
             'nome': {'type': 'string'},
@@ -79,7 +114,7 @@ class CursoController:
         return jsonify(curso)
 
     @staticmethod
-    def delete_curso(id):
+    def deleteCurso(id):
         curso: Curso = CursoService.getCursoById(id)
         if curso is None:
             output = {"error": {"msg": "500 error: Curso not found."}}

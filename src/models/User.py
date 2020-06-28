@@ -22,3 +22,11 @@ class User(Document):
         if pwd == self.password:
             return True
 
+    def to_dict(self):
+        return dict(
+            id=str(self.pk),
+            name=self.name,
+            email=self.email,
+            password=self.password,
+            access=self.access
+        )

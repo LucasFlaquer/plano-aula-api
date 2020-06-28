@@ -14,12 +14,12 @@ class UserController:
 
     service = UserService
 
+    @jwt_required
     def index(self):
-        # Listar todos os usuarios
-        users = User.objects()
+        users = UserService.getUsers()
         return jsonify(users)
 
-
+    @jwt_required
     def store(self):
         request_data = request.get_json()
         schema = {
@@ -40,10 +40,6 @@ class UserController:
                 message=v.errors
             ), 400
 
-        # user = User.from_json(json.dumps(request_data))
-        # print(User.access.admin)
-
-
         if request_data.get('access') is None:
             user = User()
             user.email = request_data.get('email')
@@ -51,13 +47,10 @@ class UserController:
             user.name = request_data.get('name')
         else:
             user = User.from_json(json.dumps(request_data))
-
         user.save()
+        return jsonify(user.to_dict()), 200
 
-        return jsonify(user), 200
-
-    #@jwt_required
-    #@staticmethod
+    @jwt_required
     def show(self, id):
         user = self.service.getUserById(id)
         if user is None:
@@ -70,9 +63,10 @@ class UserController:
     @jwt_required
     def loggedUser(self):
         user = User.objects(id=get_jwt_identity()).get()
-        return jsonify(user)
+        print(user)
+        return jsonify(user.to_dict())
 
-    @jwt_required
+    #@jwt_required
     def update(self):
         request_data = request.get_json()
         schema = {
@@ -93,6 +87,32 @@ class UserController:
 
         except:
             return forbidden()
+
+    def updateUserAccess(self):
+        request_data = request.get_json()
+        schema = {
+            'user_id': {'type':'string'},
+            'access': {'required': False, 'type': ['string', 'list']}
+        }
+        v = Validator(schema)
+        if not v.validate(request_data):
+            return jsonify(
+                erro="dados invalidos",
+                message=v.errors
+            ), 400
+
+        user = UserService.getUserById(id=request_data.get('user_id'))
+        if user is None:
+            output = {"error": {"msg": "500 error: User not found."}}
+            resp = jsonify({'result': output})
+            resp.status_code = 500
+            return resp
+
+        print(request_data.get('access'))
+
+
+
+
 
     @jwt_required
     def destroy(self):

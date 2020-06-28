@@ -12,3 +12,11 @@ class UserService():
             return user
         except (User.DoesNotExist, ValidationError):
             return None
+
+    @staticmethod
+    def getUsers():
+        users = User.objects()
+        ListUsers=[]
+        for user in users:
+            ListUsers.append(user.to_dict())
+        return ListUsers
