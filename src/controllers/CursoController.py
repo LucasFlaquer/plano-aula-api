@@ -13,10 +13,10 @@ from mongoengine import *
 
 class CursoController:
 
-
+    @jwt_required
     def indexCursos(self):
         cursos = CursoService.getAll()
-        cursoList=[]
+        cursoList = []
         for curso in cursos:
 
             if not curso.coordenador:
@@ -34,11 +34,11 @@ class CursoController:
 
         return jsonify(cursoList)
 
-
+    @jwt_required
     def storeCurso(self):
         data = request.get_json()
         schema = {
-            'nome':{'required': True, 'type': 'string'},
+            'nome': {'required': True, 'type': 'string'},
             'turno': {'type': 'string'},
             'user_id': {'type': 'string', 'required': False},
             'disciplinas': {'type': ['string', 'list']}
@@ -66,12 +66,22 @@ class CursoController:
                 curso.coordenador = coordenador
 
         # for disc_id in data.get('disciplinas'):
-    #           disc = DiscService.getDiscById(disc_id)
+        #           disc = DiscService.getDiscById(disc_id)
         #       ....
 
         curso.save()
-        return jsonify(curso)
+        if not curso.coordenador:
+            coord = None
+        else:
+            coord = dict(id=str(curso.coordenador.pk), nome=curso.coordenador.name)
 
+        d_curso = dict(
+            id=str(curso.pk),
+            nome=curso.nome,
+            turno=curso.turno,
+            coordenador=coord
+        )
+        return jsonify(d_curso)
 
     def showCurso(id):
         curso = CursoService.getCursoById(id=id)
