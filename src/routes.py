@@ -52,9 +52,9 @@ app.add_url_rule('/users/<id>', view_func=userController.destroy, methods=['DELE
 # # CRUD DE CURSORS
 app.add_url_rule('/cursos', view_func=cursoController.indexCursos, methods=['GET'])
 app.add_url_rule('/cursos', view_func=cursoController.storeCurso, methods=['POST'])
-app.add_url_rule('/cursos/<id>', view_func=CursoController.showCurso, methods=['GET'])
-app.add_url_rule('/curos/<id>', view_func=CursoController.updateCurso, methods=['PUT'])
-app.add_url_rule('/cursos/<id>', view_func=CursoController.deleteCurso, methods=['DELETE'])
+app.add_url_rule('/cursos/<id>', view_func=cursoController.showCurso, methods=['GET'])
+app.add_url_rule('/cursos/<id>', view_func=cursoController.updateCurso, methods=['PUT'])
+app.add_url_rule('/cursos/<id>', view_func=cursoController.deleteCurso, methods=['DELETE'])
 
 '''
     ROTAS:

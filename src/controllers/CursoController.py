@@ -83,7 +83,8 @@ class CursoController:
         )
         return jsonify(d_curso)
 
-    def showCurso(id):
+    @jwt_required
+    def showCurso(self, id):
         curso = CursoService.getCursoById(id=id)
         if curso is None:
             output = {"error": {"msg": "500 error: Curso not found."}}
@@ -93,7 +94,10 @@ class CursoController:
 
         return curso
 
-    def updateCurso(id):
+    @jwt_required
+    def updateCurso(self, id):
+        print('-------estou aqui')
+        print(id)
         request_data = request.get_json()
         schema = {
             'nome': {'type': 'string'},
@@ -104,7 +108,7 @@ class CursoController:
         if not v.validate(request_data):
             return jsonify(erro="dados invalidos"), 400
 
-        curso: Curso = CursoService.getCursoById(id)
+        curso: Curso = CursoService.getCursoById(id=id)
         if curso is None:
             output = {"error": {"msg": "500 error: Curso not found."}}
             resp = jsonify({'result': output})
@@ -122,8 +126,18 @@ class CursoController:
         curso.turno = request_data.get('turno')
         curso.coordenador = coordenador
         curso.save()
+        if not curso.coordenador:
+            coord = None
+        else:
+            coord = dict(id=str(curso.coordenador.pk), nome=curso.coordenador.name)
 
-        return jsonify(curso)
+        d_curso = dict(
+            id=str(curso.pk),
+            nome=curso.nome,
+            turno=curso.turno,
+            coordenador=coord
+        )
+        return jsonify(d_curso)
 
     @staticmethod
     def deleteCurso(id):

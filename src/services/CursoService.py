@@ -4,7 +4,8 @@ from src.models.Curso import Curso
 
 
 class CursoService:
-    def getCursoById(self, id):
+    @staticmethod
+    def getCursoById(id):
         try:
             curso = Curso.objects(id=id).get()
             return curso
