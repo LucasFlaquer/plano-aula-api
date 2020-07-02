@@ -5,7 +5,7 @@ from src.models.Curso import Curso
 
 class CursoService:
     @staticmethod
-    def getCursoById(id):
+    def get_curso_by_id(id):
         try:
             curso = Curso.objects(id=id).get()
             return curso
@@ -13,5 +13,5 @@ class CursoService:
             return None
 
     @staticmethod
-    def getAll():
+    def get_all():
         return Curso.objects()

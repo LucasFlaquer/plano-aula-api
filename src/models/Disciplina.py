@@ -1,24 +1,32 @@
 from mongoengine import *
 
-
-# class CodTurno(EmbeddedDocument):
-#     cod = StringField(required=True)
-#     turno = StringField(max_length=1, required=True)
-#from src.models.Curso import Curso
+from src.models.Bibliografia import Bibliografia
 
 
 class Ementa(EmbeddedDocument):
-    
     data = DateTimeField()
-    ementa = StringField()
+    descricao = StringField()
     conteudo = ListField(StringField())
     competencias = ListField(StringField())
     objetivos = ListField(StringField())
+    # bibliografia_basica = ListField(ReferenceField(Bibliografia))
+    # bibliografia_complementar = ListField(ReferenceField(Bibliografia))
 
 
 class Disciplina(Document):
-    nome = StringField()
+    nome = StringField(required=True)
     carga_pratica = IntField()
     carga_teoria = IntField()
-    #list_cursos = ListField(ReferenceField(Curso))
-    #prof_nde = ReferenceField()
+    semestre = IntField()
+    ementas = SortedListField(EmbeddedDocumentField(Ementa), default=[], ordering="data")
+
+    # prof_nde = ReferenceField()
+
+    def to_dict(self):
+        return dict(
+            id=self.pk,
+            nome=self.nome,
+            teoria=self.carga_teoria,
+            pratica=self.carga_pratica,
+            ementa=self.ementas[0]
+        )

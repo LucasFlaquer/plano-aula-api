@@ -15,7 +15,7 @@ class CursoController:
 
     @jwt_required
     def indexCursos(self):
-        cursos = CursoService.getAll()
+        cursos = CursoService.get_all()
         cursoList = []
         for curso in cursos:
 
@@ -85,7 +85,7 @@ class CursoController:
 
     @jwt_required
     def showCurso(self, id):
-        curso = CursoService.getCursoById(id=id)
+        curso = CursoService.get_curso_by_id(id=id)
         if curso is None:
             output = {"error": {"msg": "500 error: Curso not found."}}
             resp = jsonify({'result': output})
@@ -108,7 +108,7 @@ class CursoController:
         if not v.validate(request_data):
             return jsonify(erro="dados invalidos"), 400
 
-        curso: Curso = CursoService.getCursoById(id=id)
+        curso: Curso = CursoService.get_curso_by_id(id=id)
         if curso is None:
             output = {"error": {"msg": "500 error: Curso not found."}}
             resp = jsonify({'result': output})
@@ -141,7 +141,7 @@ class CursoController:
 
     @staticmethod
     def deleteCurso(id):
-        curso: Curso = CursoService.getCursoById(id)
+        curso: Curso = CursoService.get_curso_by_id(id)
         if curso is None:
             output = {"error": {"msg": "500 error: Curso not found."}}
             resp = jsonify({'result': output})

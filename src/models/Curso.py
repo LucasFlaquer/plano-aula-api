@@ -6,14 +6,19 @@ from src.models.Disciplina import Disciplina
 from src.models.User import User
 
 
+class Grade(EmbeddedDocument):
+    ano = IntField()
+    disciplinas = ListField(ReferenceField(Disciplina), default=[])
+
+
 class Curso(Document):
     nome = StringField(required=True)
     turno = StringField(max_length=1)
     coordenador = ReferenceField(User, default=None)
     publico = BooleanField(default=True)
-    disciplinas = ListField(ReferenceField(Disciplina), default=[])
+    grades = SortedListField(EmbeddedDocumentField(Grade), ordering="ano")
 
-    #@property
+    # @property
     # def to_dict(self):
     #     if self.coordenador == None:
     #         coord = 'Nenhum coordenador cadastrado'
@@ -26,3 +31,9 @@ class Curso(Document):
     #         "disciplinas": self.disciplinas
     #     }
     #     return json.dumps(curso_dict)
+
+
+    # logs:
+    # ref user
+    # acao string
+    # datahora

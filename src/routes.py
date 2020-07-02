@@ -5,13 +5,16 @@ from flask_jwt_extended import create_access_token, create_refresh_token
 from mongoengine import DoesNotExist
 
 from src import app
+from src.controllers.BibliografiaController import BibliografiaController
 from src.controllers.CursoController import CursoController
+from src.controllers.DisciplinaController import DisciplinaController
 from src.controllers.UserController import UserController
 from src.functions.errors import unauthorized
 from src.models.User import User
 
 userController = UserController()
 cursoController = CursoController()
+disciplinaController = DisciplinaController()
 
 
 @app.route('/login', methods=['POST'])
@@ -55,6 +58,18 @@ app.add_url_rule('/cursos', view_func=cursoController.storeCurso, methods=['POST
 app.add_url_rule('/cursos/<id>', view_func=cursoController.showCurso, methods=['GET'])
 app.add_url_rule('/cursos/<id>', view_func=cursoController.updateCurso, methods=['PUT'])
 app.add_url_rule('/cursos/<id>', view_func=cursoController.deleteCurso, methods=['DELETE'])
+
+# CRUD DE DISCIPLINAS
+app.add_url_rule('/disciplinas', view_func=DisciplinaController.index_disciplina, methods=['GET'])
+app.add_url_rule('/disciplinas', view_func=DisciplinaController.show_disciplina, methods=['POST'])
+
+
+
+#region BIBLIOGRAFIAS
+app.add_url_rule('/bibliografias', view_func=BibliografiaController.index_bibliografia, methods=['GET'])
+
+#endregion
+
 
 '''
     ROTAS:
