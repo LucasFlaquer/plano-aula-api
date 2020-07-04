@@ -25,7 +25,7 @@ def login():
         auth_success = user.check_pwd(data.get('password'))
         if not auth_success:
             return unauthorized()
-        expiry = datetime.timedelta(minutes=5)
+        expiry = datetime.timedelta(hours=2)
         access_token = create_access_token(identity=str(user.id), expires_delta=expiry)
         refresh_token = create_refresh_token(identity=str(user.id))
         return jsonify(
@@ -67,6 +67,9 @@ app.add_url_rule('/disciplinas', view_func=DisciplinaController.show_disciplina,
 
 #region BIBLIOGRAFIAS
 app.add_url_rule('/bibliografias', view_func=BibliografiaController.index_bibliografia, methods=['GET'])
+app.add_url_rule('/bibliografias', view_func=BibliografiaController.store_bibliografia, methods=['POST'])
+app.add_url_rule('/bibliografias/<id>', view_func=BibliografiaController.show_bibliografia, methods=['GET'])
+app.add_url_rule('/bibliografias/<id>', view_func=BibliografiaController.update_bibliografia, methods=['PUT'])
 
 #endregion
 

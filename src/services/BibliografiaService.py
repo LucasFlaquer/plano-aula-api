@@ -10,10 +10,11 @@ class BibliografiaService:
         list_bibliografia = []
         for bibliografia in bibliografias:
             list_bibliografia.append(bibliografia.to_dict())
+        return list_bibliografia
 
     @staticmethod
     def get_by_id(id):
         try:
-            return Bibliografia.objects(id=id)
+            return Bibliografia.objects(id=id).get()
         except (Bibliografia.DoesNotExists, ValidationError):
             return None

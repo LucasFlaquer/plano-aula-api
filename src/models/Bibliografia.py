@@ -8,7 +8,7 @@ class Bibliografia(Document):
 
     def to_dict(self):
         return dict(
-            id=self.pk,
+            id=str(self.pk),
             nome=self.nome,
             autor=self.autor,
             editora=self.editora
