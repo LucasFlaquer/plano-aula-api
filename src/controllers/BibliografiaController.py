@@ -1,7 +1,7 @@
 from cerberus import Validator
 from flask import jsonify, request
 from flask_jwt_extended import jwt_required
-from mongoengine import OperationError
+from mongoengine import OperationError, NotUniqueError
 
 from src.models.Bibliografia import Bibliografia
 from src.services.BibliografiaService import BibliografiaService
@@ -38,11 +38,16 @@ class BibliografiaController:
     def store_bibliografia():
         data = request.get_json()
         validate(data)
-        bibliografia = Bibliografia()
-        bibliografia.nome = data.get('nome')
-        bibliografia.autor = data.get('autor')
-        bibliografia.editora = data.get('editora')
-        bibliografia.save()
+        try:
+            bibliografia = Bibliografia()
+            bibliografia.nome = data.get('nome')
+            bibliografia.autor = data.get('autor')
+            bibliografia.editora = data.get('editora')
+            bibliografia.save()
+        except NotUniqueError:
+            return jsonify(
+                error="O campo Nome deve ser único"
+            ), 422
         return jsonify(bibliografia.to_dict())
 
     @staticmethod
@@ -68,8 +73,8 @@ class BibliografiaController:
 
         return jsonify(bibliografia.to_dict())
 
-    @jwt_required
     @staticmethod
+    @jwt_required
     def delete_bibliografia(id):
         bibliografia: Bibliografia = BibliografiaService.get_by_id(id)
         if bibliografia is None:

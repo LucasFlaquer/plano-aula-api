@@ -70,6 +70,7 @@ app.add_url_rule('/bibliografias', view_func=BibliografiaController.index_biblio
 app.add_url_rule('/bibliografias', view_func=BibliografiaController.store_bibliografia, methods=['POST'])
 app.add_url_rule('/bibliografias/<id>', view_func=BibliografiaController.show_bibliografia, methods=['GET'])
 app.add_url_rule('/bibliografias/<id>', view_func=BibliografiaController.update_bibliografia, methods=['PUT'])
+app.add_url_rule('/bibliografias/<id>', view_func=BibliografiaController.delete_bibliografia, methods=['DELETE'])
 
 #endregion
 
