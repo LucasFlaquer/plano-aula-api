@@ -9,8 +9,8 @@ class Ementa(EmbeddedDocument):
     conteudo = ListField(StringField())
     competencias = ListField(StringField())
     objetivos = ListField(StringField())
-    # bibliografia_basica = ListField(ReferenceField(Bibliografia))
-    # bibliografia_complementar = ListField(ReferenceField(Bibliografia))
+    bibliografia_basica = ListField(ReferenceField(Bibliografia))
+    bibliografia_complementar = ListField(ReferenceField(Bibliografia))
 
 
 class Disciplina(Document):

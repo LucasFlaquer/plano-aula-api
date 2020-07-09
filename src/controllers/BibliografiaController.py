@@ -18,8 +18,7 @@ def validate(data):
     v = Validator()
     v.schema = {
         'nome': {'required': True, 'type': 'string'},
-        'autor': {'required': False, 'type': 'string'},
-        'editora': {'required': False, 'type': 'string'}
+        'conteudo': {'required': True, 'type': 'string'}
     }
 
     if not v.validate(data):
@@ -41,8 +40,7 @@ class BibliografiaController:
         try:
             bibliografia = Bibliografia()
             bibliografia.nome = data.get('nome')
-            bibliografia.autor = data.get('autor')
-            bibliografia.editora = data.get('editora')
+            bibliografia.conteudo = data.get('conteudo')
             bibliografia.save()
         except NotUniqueError:
             return jsonify(
@@ -67,8 +65,7 @@ class BibliografiaController:
             return_not_found()
 
         bibliografia.nome = data.get('nome')
-        bibliografia.autor = data.get('autor') if data.get('autor') else bibliografia.autor
-        bibliografia.editora = data.get('editora') if data.get('editora') else bibliografia.editora
+        bibliografia.autor = data.get('conteudo')
         bibliografia.save()
 
         return jsonify(bibliografia.to_dict())
