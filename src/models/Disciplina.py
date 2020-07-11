@@ -12,6 +12,23 @@ class Ementa(EmbeddedDocument):
     bibliografia_basica = ListField(ReferenceField(Bibliografia))
     bibliografia_complementar = ListField(ReferenceField(Bibliografia))
 
+    def to_dict(self):
+        basica = []
+        complementar = []
+        for lib in self.bibliografia_basica:
+            basica.append(str(lib.pk))
+        for lib in self.bibliografia_complementar:
+            complementar.append(str(lib.pk))
+        return dict(
+            data=self.data.strftime("%m/%d/%Y, %H:%M:%S"),
+            descricao=self.descricao,
+            conteudo=self.conteudo,
+            competencias=self.competencias,
+            objetivos=self.objetivos,
+            basica=basica,
+            complementar=complementar
+        )
+
 
 class Disciplina(Document):
     nome = StringField(required=True)
@@ -24,9 +41,9 @@ class Disciplina(Document):
 
     def to_dict(self):
         return dict(
-            id=self.pk,
+            id=str(self.pk),
             nome=self.nome,
             teoria=self.carga_teoria,
             pratica=self.carga_pratica,
-            ementa=self.ementas[0]
+            ementa=self.ementas[0].to_dict()
         )

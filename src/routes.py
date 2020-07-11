@@ -61,18 +61,17 @@ app.add_url_rule('/cursos/<id>', view_func=cursoController.deleteCurso, methods=
 
 # CRUD DE DISCIPLINAS
 app.add_url_rule('/disciplinas', view_func=DisciplinaController.index_disciplina, methods=['GET'])
-app.add_url_rule('/disciplinas', view_func=DisciplinaController.show_disciplina, methods=['POST'])
+app.add_url_rule('/disciplinas', view_func=DisciplinaController.store_disciplina, methods=['POST'])
 
 
-
-#region BIBLIOGRAFIAS
+# region BIBLIOGRAFIAS
 app.add_url_rule('/bibliografias', view_func=BibliografiaController.index_bibliografia, methods=['GET'])
 app.add_url_rule('/bibliografias', view_func=BibliografiaController.store_bibliografia, methods=['POST'])
 app.add_url_rule('/bibliografias/<id>', view_func=BibliografiaController.show_bibliografia, methods=['GET'])
 app.add_url_rule('/bibliografias/<id>', view_func=BibliografiaController.update_bibliografia, methods=['PUT'])
 app.add_url_rule('/bibliografias/<id>', view_func=BibliografiaController.delete_bibliografia, methods=['DELETE'])
 
-#endregion
+# endregion
 
 
 '''
