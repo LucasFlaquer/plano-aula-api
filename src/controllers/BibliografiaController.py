@@ -64,8 +64,9 @@ class BibliografiaController:
         if bibliografia is None:
             return_not_found()
 
+        print(data.get('conteudo'))
         bibliografia.nome = data.get('nome')
-        bibliografia.autor = data.get('conteudo')
+        bibliografia.conteudo = data.get('conteudo')
         bibliografia.save()
 
         return jsonify(bibliografia.to_dict())
