@@ -10,6 +10,13 @@ from src.services.BibliografiaService import BibliografiaService
 from src.services.DisciplinaService import DisciplinaService
 
 
+def return_not_found():
+    output = {"error": {"msg": "500 error: Disciplina não encontrada."}}
+    resp = jsonify({'result': output})
+    resp.status_code = 500
+    return resp
+
+
 class DisciplinaController:
     @staticmethod
     def index_disciplina():
@@ -67,18 +74,15 @@ class DisciplinaController:
         disciplina.save()
         return jsonify(disciplina)
 
-    # @staticmethod
-    # def show_disciplina(id):
-    #     disciplina: Disciplina = DisciplinaService.get_disc_by_id(id)
-    #
-    #     if disciplina is None:
-    #         output = {"error": {"msg": "500 error: Disciplina não encontrada."}}
-    #         resp = jsonify({'result': output})
-    #         resp.status_code = 500
-    #         return resp
-    #
-    #     return jsonify(disciplina.to_dict())
-    #
+    @staticmethod
+    @jwt_required
+    def show_disciplina(id):
+        disciplina: Disciplina = DisciplinaService.get_by_id(id)
+        if disciplina is None:
+            return_not_found()
+        return jsonify(disciplina.to_dict())
+
+
     # def update_disciplina(self, id):
     #     data = request.get_json()
     #     # atualizar a disciplina

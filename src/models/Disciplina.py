@@ -16,9 +16,9 @@ class Ementa(EmbeddedDocument):
         basica = []
         complementar = []
         for lib in self.bibliografia_basica:
-            basica.append(str(lib.pk))
+            basica.append(dict(id=str(lib.pk), nome=lib.nome, conteudo=lib.conteudo))
         for lib in self.bibliografia_complementar:
-            complementar.append(str(lib.pk))
+            complementar.append(dict(id=str(lib.pk), nome=lib.nome, conteudo=lib.conteudo))
         return dict(
             data=self.data.strftime("%m/%d/%Y, %H:%M:%S"),
             descricao=self.descricao,

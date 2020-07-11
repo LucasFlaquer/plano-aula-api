@@ -62,6 +62,7 @@ app.add_url_rule('/cursos/<id>', view_func=cursoController.deleteCurso, methods=
 # CRUD DE DISCIPLINAS
 app.add_url_rule('/disciplinas', view_func=DisciplinaController.index_disciplina, methods=['GET'])
 app.add_url_rule('/disciplinas', view_func=DisciplinaController.store_disciplina, methods=['POST'])
+app.add_url_rule('/disciplinas/<id>', view_func=DisciplinaController.show_disciplina, methods=['GET'])
 
 
 # region BIBLIOGRAFIAS
