@@ -14,10 +14,9 @@ class DisciplinaService:
         disciplinas = []
 
         for disc in list_disc:
-            disciplinas.append(disc.to_dict)
+            disciplinas.append(disc.to_dict())
 
         return disciplinas
-
 
     @staticmethod
     def get_by_id(id):

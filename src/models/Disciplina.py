@@ -45,5 +45,6 @@ class Disciplina(Document):
             nome=self.nome,
             teoria=self.carga_teoria,
             pratica=self.carga_pratica,
+            semestre=self.semestre,
             ementa=self.ementas[0].to_dict()
         )

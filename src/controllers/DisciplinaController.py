@@ -14,8 +14,8 @@ class DisciplinaController:
     @staticmethod
     def index_disciplina():
         disciplinas: [Disciplina] = DisciplinaService.get_all_as_dict()
-        return jsonify(Disciplina.objects.first().to_dict())
-        # return disciplinas
+
+        return jsonify(disciplinas)
 
     @staticmethod
     @jwt_required
@@ -45,6 +45,7 @@ class DisciplinaController:
         disciplina.nome = data.get('nome')
         disciplina.carga_pratica = data.get('pratica')
         disciplina.carga_teoria = data.get('teoria')
+        disciplina.semestre = data.get('semestre')
 
         # region EMENTA
         ementa = Ementa()
