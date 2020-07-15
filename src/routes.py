@@ -52,6 +52,14 @@ app.add_url_rule('/users/me', view_func=userController.loggedUser, methods=['GET
 app.add_url_rule('/users/update', view_func=userController.update, methods=['PUT'])
 app.add_url_rule('/users/<id>', view_func=userController.destroy, methods=['DELETE'])
 
+# region CRUD DE DISCIPLINAS
+app.add_url_rule('/disciplinas', view_func=DisciplinaController.index_disciplina, methods=['GET'])
+app.add_url_rule('/disciplinas', view_func=DisciplinaController.store_disciplina, methods=['POST'])
+app.add_url_rule('/disciplinas/<id>', view_func=DisciplinaController.show_disciplina, methods=['GET'])
+app.add_url_rule('/disciplinas/<id>', view_func=DisciplinaController.update_disciplina, methods=['PUT'])
+app.add_url_rule('/disciplinas/ementa', view_func=DisciplinaController.new_ementa, methods=['PATCH'])
+# endregion
+
 # # CRUD DE CURSORS
 app.add_url_rule('/cursos', view_func=cursoController.indexCursos, methods=['GET'])
 app.add_url_rule('/cursos', view_func=cursoController.storeCurso, methods=['POST'])
@@ -59,18 +67,12 @@ app.add_url_rule('/cursos/<id>', view_func=cursoController.showCurso, methods=['
 app.add_url_rule('/cursos/<id>', view_func=cursoController.updateCurso, methods=['PUT'])
 app.add_url_rule('/cursos/<id>', view_func=cursoController.deleteCurso, methods=['DELETE'])
 
-# CRUD DE DISCIPLINAS
-app.add_url_rule('/disciplinas', view_func=DisciplinaController.index_disciplina, methods=['GET'])
-app.add_url_rule('/disciplinas', view_func=DisciplinaController.store_disciplina, methods=['POST'])
-app.add_url_rule('/disciplinas/<id>', view_func=DisciplinaController.show_disciplina, methods=['GET'])
-
-
 # region BIBLIOGRAFIAS
 app.add_url_rule('/bibliografias', view_func=BibliografiaController.index_bibliografia, methods=['GET'])
 app.add_url_rule('/bibliografias', view_func=BibliografiaController.store_bibliografia, methods=['POST'])
 app.add_url_rule('/bibliografias/<id>', view_func=BibliografiaController.show_bibliografia, methods=['GET'])
 app.add_url_rule('/bibliografias/<id>', view_func=BibliografiaController.update_bibliografia, methods=['PUT'])
-app.add_url_rule('/bibliografias/<id>', view_func=BibliografiaController.delete_bibliografia, methods=['DELETE'])
+app.add_url_rule('/bibliografias/<id>', view_func=BibliografiaController.destroy_bibliografia, methods=['DELETE'])
 
 # endregion
 

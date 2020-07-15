@@ -73,7 +73,7 @@ class BibliografiaController:
 
     @staticmethod
     @jwt_required
-    def delete_bibliografia(id):
+    def destroy_bibliografia(id):
         bibliografia: Bibliografia = BibliografiaService.get_by_id(id)
         if bibliografia is None:
             return_not_found()

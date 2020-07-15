@@ -35,11 +35,11 @@ class Disciplina(Document):
     carga_pratica = IntField()
     carga_teoria = IntField()
     semestre = IntField()
-    ementas = SortedListField(EmbeddedDocumentField(Ementa), default=[], ordering="data")
+    ementas = SortedListField(EmbeddedDocumentField(Ementa), default=[], ordering="data",  reverse=True)
 
     # prof_nde = ReferenceField()
 
-    def to_dict(self):
+    def to_dict(self) -> object:
         return dict(
             id=str(self.pk),
             nome=self.nome,

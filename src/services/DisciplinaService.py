@@ -1,4 +1,5 @@
 from src.models.Disciplina import Disciplina, ValidationError
+from src.services.BibliografiaService import BibliografiaService
 
 
 class DisciplinaService:
@@ -24,3 +25,11 @@ class DisciplinaService:
             return Disciplina.objects(id=id).get()
         except (Disciplina.DoesNotExists, ValidationError):
             return None
+
+    @staticmethod
+    def add_bibliografia_to_ementa(libs):
+        libs_list = []
+        for lib_id in libs:
+            libs_list.append(BibliografiaService.get_by_id(lib_id))
+
+        return libs_list
