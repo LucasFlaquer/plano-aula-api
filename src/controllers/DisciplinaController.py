@@ -38,115 +38,114 @@ def validate_all(data):
         return jsonify(error=v.errors), 400
 
 
-class DisciplinaController:
-    @staticmethod
-    def index_disciplina():
-        disciplinas: [Disciplina] = DisciplinaService.get_all_as_dict()
+@jwt_required
+def index_disciplina():
+    disciplinas: [Disciplina] = DisciplinaService.get_all_as_dict()
 
-        return jsonify(disciplinas)
+    return jsonify(disciplinas)
 
-    @staticmethod
-    @jwt_required
-    def store_disciplina():
-        data = request.get_json()
-        validate_all(data)
 
-        disciplina = Disciplina()
-        disciplina.nome = data.get('nome')
-        disciplina.carga_pratica = data.get('pratica')
-        disciplina.carga_teoria = data.get('teoria')
-        disciplina.semestre = data.get('semestre')
+@jwt_required
+def store_disciplina():
+    data = request.get_json()
+    validate_all(data)
 
-        # region EMENTA
-        ementa = Ementa()
-        ementa.data = datetime.utcnow()
-        ementa.descricao = data.get('ementa')['descricao']
-        ementa.conteudo = data.get('ementa')['conteudo']
-        ementa.competencias = data.get('ementa')['competencias']
-        ementa.objetivos = data.get('ementa')['objetivos']
+    disciplina = Disciplina()
+    disciplina.nome = data.get('nome')
+    disciplina.carga_pratica = data.get('pratica')
+    disciplina.carga_teoria = data.get('teoria')
+    disciplina.semestre = data.get('semestre')
 
-        for lib_id in data.get('basica'):
-            bibliografia: Bibliografia = BibliografiaService.get_by_id(lib_id)
-            ementa.bibliografia_basica.append(bibliografia)
-        for lib_id in data.get('complementar'):
-            bibliografia: Bibliografia = BibliografiaService.get_by_id(lib_id)
-            ementa.bibliografia_complementar.append(bibliografia)
-        disciplina.ementas.append(ementa)
-        # endregion
+    # region EMENTA
+    ementa = Ementa()
+    ementa.data = datetime.utcnow()
+    ementa.descricao = data.get('ementa')['descricao']
+    ementa.conteudo = data.get('ementa')['conteudo']
+    ementa.competencias = data.get('ementa')['competencias']
+    ementa.objetivos = data.get('ementa')['objetivos']
 
-        disciplina.save()
-        return jsonify(disciplina)
+    for lib_id in data.get('basica'):
+        bibliografia: Bibliografia = BibliografiaService.get_by_id(lib_id)
+        ementa.bibliografia_basica.append(bibliografia)
+    for lib_id in data.get('complementar'):
+        bibliografia: Bibliografia = BibliografiaService.get_by_id(lib_id)
+        ementa.bibliografia_complementar.append(bibliografia)
+    disciplina.ementas.append(ementa)
+    # endregion
 
-    @staticmethod
-    @jwt_required
-    def show_disciplina(id):
-        disciplina: Disciplina = DisciplinaService.get_by_id(id)
-        if disciplina is None:
-            return_not_found()
-        return jsonify(disciplina.to_dict())
+    disciplina.save()
+    return jsonify(disciplina)
 
-    @staticmethod
-    @jwt_required
-    def new_ementa():
-        id_disc = request.headers.get('id_disc')
-        data = request.get_json()
 
-        disciplina: Disciplina = DisciplinaService.get_by_id(id_disc)
-        if disciplina is None:
-            return_not_found()
+@jwt_required
+def show_disciplina(id):
+    disciplina: Disciplina = DisciplinaService.get_by_id(id)
+    if disciplina is None:
+        return_not_found()
+    return jsonify(disciplina.to_dict())
 
-        ementa = Ementa()
-        ementa.data = datetime.utcnow()
-        ementa.descricao = data.get('descricao')
-        ementa.conteudo = data.get('conteudo')
-        ementa.competencias = data.get('competencias')
-        ementa.objetivos = data.get('objetivos')
-        ementa.bibliografia_basica = DisciplinaService.add_bibliografia_to_ementa(data.get('basica'))
-        ementa.bibliografia_complementar = DisciplinaService.add_bibliografia_to_ementa(data.get('complementar'))
-        # disciplina.ementas.append(ementa)
-        ementas: [Ementa] = disciplina.ementas
-        ementas.append(ementa)
-        disciplina.ementas = ementas
-        disciplina.save()
-        return jsonify(disciplina.to_dict())
 
-    @staticmethod
-    @jwt_required
-    def update_disciplina(id):
-        data = request.get_json()
-        validate_all(data)
-        print('teste')
-        disciplina: Disciplina = DisciplinaService.get_by_id(id)
-        if disciplina is None:
-            return_not_found()
+@jwt_required
+def new_ementa():
+    id_disc = request.headers.get('id_disc')
+    data = request.get_json()
 
-        disciplina.nome = data.get('nome')
-        disciplina.carga_pratica = data.get('pratica')
-        disciplina.carga_teoria = data.get('teoria')
-        disciplina.semestre = data.get('semestre')
-        ementa = Ementa()
-        ementa.data = datetime.utcnow()
-        ementa.descricao = data.get('ementa')['descricao']
-        ementa.conteudo = data.get('ementa')['conteudo']
-        ementa.competencias = data.get('ementa')['competencias']
-        ementa.objetivos = data.get('ementa')['objetivos']
-        ementa.bibliografia_basica = DisciplinaService.add_bibliografia_to_ementa(data.get('basica'))
-        ementa.bibliografia_complementar = DisciplinaService.add_bibliografia_to_ementa(data.get('complementar'))
-        disciplina.ementas[0] = ementa
+    disciplina: Disciplina = DisciplinaService.get_by_id(id_disc)
+    if disciplina is None:
+        return_not_found()
 
-        disciplina.save()
-        return jsonify(disciplina.to_dict())
+    ementa = Ementa()
+    ementa.data = datetime.utcnow()
+    ementa.descricao = data.get('descricao')
+    ementa.conteudo = data.get('conteudo')
+    ementa.competencias = data.get('competencias')
+    ementa.objetivos = data.get('objetivos')
+    ementa.bibliografia_basica = DisciplinaService.add_bibliografia_to_ementa(data.get('basica'))
+    ementa.bibliografia_complementar = DisciplinaService.add_bibliografia_to_ementa(data.get('complementar'))
+    # disciplina.ementas.append(ementa)
+    ementas: [Ementa] = disciplina.ementas
+    ementas.append(ementa)
+    disciplina.ementas = ementas
+    disciplina.save()
+    return jsonify(disciplina.to_dict())
 
-    @staticmethod
-    @jwt_required
-    def destroy_disciplina(id):
-        disciplina: Disciplina = DisciplinaService.get_by_id(id)
 
-        if disciplina is None:
-            return_not_found()
+@jwt_required
+def update_disciplina(id):
+    data = request.get_json()
+    validate_all(data)
+    print('teste')
+    disciplina: Disciplina = DisciplinaService.get_by_id(id)
+    if disciplina is None:
+        return_not_found()
 
-        try:
-            disciplina.delete()
-            return jsonify(), 200
-        except OperationError:
-            return jsonify(OperationError)
+    disciplina.nome = data.get('nome')
+    disciplina.carga_pratica = data.get('pratica')
+    disciplina.carga_teoria = data.get('teoria')
+    disciplina.semestre = data.get('semestre')
+    ementa = Ementa()
+    ementa.data = datetime.utcnow()
+    ementa.descricao = data.get('ementa')['descricao']
+    ementa.conteudo = data.get('ementa')['conteudo']
+    ementa.competencias = data.get('ementa')['competencias']
+    ementa.objetivos = data.get('ementa')['objetivos']
+    ementa.bibliografia_basica = DisciplinaService.add_bibliografia_to_ementa(data.get('basica'))
+    ementa.bibliografia_complementar = DisciplinaService.add_bibliografia_to_ementa(data.get('complementar'))
+    disciplina.ementas[0] = ementa
+
+    disciplina.save()
+    return jsonify(disciplina.to_dict())
+
+
+@jwt_required
+def destroy_disciplina(id):
+    disciplina: Disciplina = DisciplinaService.get_by_id(id)
+
+    if disciplina is None:
+        return_not_found()
+
+    try:
+        disciplina.delete()
+        return jsonify(), 200
+    except OperationError:
+        return jsonify(OperationError)

@@ -1,6 +1,6 @@
 from src.models.Disciplina import Disciplina, ValidationError
 from src.services.BibliografiaService import BibliografiaService
-
+from mongoengine import errors
 
 class DisciplinaService:
 
@@ -23,7 +23,7 @@ class DisciplinaService:
     def get_by_id(id):
         try:
             return Disciplina.objects(id=id).get()
-        except (Disciplina.DoesNotExists, ValidationError):
+        except errors.ValidationError:
             return None
 
     @staticmethod

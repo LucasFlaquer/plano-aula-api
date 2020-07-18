@@ -8,32 +8,32 @@ from src.models.User import User
 
 class Grade(EmbeddedDocument):
     ano = IntField()
-    disciplinas = ListField(ReferenceField(Disciplina), default=[])
+    disciplinas = ListField(ReferenceField(Disciplina))
+
+    def to_dict(self):
+        disciplinas_dict = []
+        disc: Disciplina
+        for disc in self.disciplinas:
+            disciplinas_dict.append(dict(id=str(disc.id), nome=disc.nome))
+        print(disciplinas_dict)
+        return dict(ano=self.ano, disciplinas=disciplinas_dict)
 
 
 class Curso(Document):
     nome = StringField(required=True)
-    turno = StringField(max_length=1)
     coordenador = ReferenceField(User, default=None)
     publico = BooleanField(default=True)
     grades = SortedListField(EmbeddedDocumentField(Grade), ordering="ano")
 
-    # @property
-    # def to_dict(self):
-    #     if self.coordenador == None:
-    #         coord = 'Nenhum coordenador cadastrado'
-    #     else:
-    #         coord = self.coordenador.name
-    #     curso_dict = {
-    #         "nome": self.nome,
-    #         "turno": self.turno,
-    #         "coordenador": coord,
-    #         "disciplinas": self.disciplinas
-    #     }
-    #     return json.dumps(curso_dict)
+    def to_dict(self) -> object:
+        grades_dict = []
+        grade: Grade
+        for grade in self.grades:
+            grades_dict.append(grade.to_dict())
 
+        return dict(
+            id=str(self.pk),
+            nome=self.nome,
+            grades=grades_dict
 
-    # logs:
-    # ref user
-    # acao string
-    # datahora
+        )

@@ -4,9 +4,9 @@ from mongoengine import ValidationError
 from src.models.User import User
 
 
-class UserService():
+class UserService:
     @staticmethod
-    def getUserById(id):
+    def get_by_id(id):
         try:
             user = User.objects(id=id).get()
             return user

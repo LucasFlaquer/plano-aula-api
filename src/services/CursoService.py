@@ -15,3 +15,7 @@ class CursoService:
     @staticmethod
     def get_all():
         return Curso.objects()
+
+    # @staticmethod
+    # def add_disciplinas_to_grade(list_disciplinas):
+    #     disciplinas = [],
