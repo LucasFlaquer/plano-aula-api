@@ -65,8 +65,8 @@ app.add_url_rule('/disciplinas/ementa', view_func=DisciplinaController.new_ement
 # endregion
 
 # # CRUD DE CURSORS
-# app.add_url_rule('/cursos', view_func=, methods=['GET'])
+app.add_url_rule('/cursos', view_func=CursoController.index_curso, methods=['GET'])
 app.add_url_rule('/cursos', view_func=CursoController.store_curso, methods=['POST'])
-# app.add_url_rule('/cursos/<id>', view_func= , methods=['GET'])
-# app.add_url_rule('/cursos/<id>', view_func=, methods=['PUT'])
-# app.add_url_rule('/cursos/<id>', view_func=, methods=['DELETE'])
+app.add_url_rule('/cursos/<id>', view_func=CursoController.show_curso, methods=['GET'])
+app.add_url_rule('/cursos/<id>', view_func=CursoController.update_curso, methods=['PUT'])
+app.add_url_rule('/cursos/<id>', view_func=CursoController.delete_curso, methods=['DELETE'])

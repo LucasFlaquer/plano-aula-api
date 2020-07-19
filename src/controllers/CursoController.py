@@ -17,20 +17,9 @@ from mongoengine import *
 def index_curso():
     cursos = CursoService.get_all()
     curso_list = []
+    curso: Curso
     for curso in cursos:
-
-        if not curso.coordenador:
-            coord = None
-        else:
-            coord = dict(id=str(curso.coordenador.pk), nome=curso.coordenador.name)
-
-        d_curso = dict(
-            id=str(curso.pk),
-            nome=curso.nome,
-            turno=curso.turno,
-            coordenador=coord
-        )
-        curso_list.append(d_curso)
+        curso_list.append(curso.to_dict_first_grade())
 
     return jsonify(curso_list)
 
@@ -60,59 +49,39 @@ def store_curso():
 
 @jwt_required
 def show_curso(id):
-    curso = CursoService.get_curso_by_id(id=id)
+    curso: Curso = CursoService.get_curso_by_id(id)
     if curso is None:
         output = {"error": {"msg": "500 error: Curso not found."}}
         resp = jsonify({'result': output})
         resp.status_code = 500
         return resp
 
-    return curso
+    return jsonify(curso.to_dict_first_grade())
 
 
-# @jwt_required
-# def update_curso(id):
-#     request_data = request.get_json()
-#     schema = {
-#         'nome': {'type': 'string'},
-#         'turno': {'type': 'string'},
-#         'user_id': {'type': 'string'}
-#     }
-#     v = Validator(schema)
-#     if not v.validate(request_data):
-#         return jsonify(erro="dados invalidos"), 400
-#
-#     curso: Curso = CursoService.get_curso_by_id(id=id)
-#     if curso is None:
-#         output = {"error": {"msg": "500 error: Curso not found."}}
-#         resp = jsonify({'result': output})
-#         resp.status_code = 500
-#         return resp
-#
-#     coordenador = UserService.getUserById(request_data.get('user_id'))
-#     if coordenador is None:
-#         output = {"error": {"msg": "500 error: Professor not found."}}
-#         resp = jsonify({'result': output})
-#         resp.status_code = 500
-#         return resp
-#
-#     curso.nome = request_data.get('nome')
-#     curso.turno = request_data.get('turno')
-#     curso.coordenador = coordenador
-#     curso.save()
-#     if not curso.coordenador:
-#         coord = None
-#     else:
-#         coord = dict(id=str(curso.coordenador.pk), nome=curso.coordenador.name)
-#
-#     d_curso = dict(
-#         id=str(curso.pk),
-#         nome=curso.nome,
-#         turno=curso.turno,
-#         coordenador=coord
-#     )
-#     return jsonify(d_curso)
-#
+@jwt_required
+def update_curso(id):
+    data = request.get_json()
+    validate_all(data)
+
+    curso: Curso = CursoService.get_curso_by_id(id)
+    if curso is None:
+        return_curso_not_found()
+
+    coordenador = UserService.get_by_id(data.get('user_id'))
+    if coordenador is None:
+        return_user_not_found()
+
+    curso.nome = data.get('nome')
+    curso.turno = data.get('turno')
+    curso.coordenador = coordenador
+
+    grade: Grade = set_grade_from_data(data.get('grade'))
+    curso.grades[0] = grade
+    curso.save()
+
+    return jsonify(curso.to_dict())
+
 
 def delete_curso(id):
     curso: Curso = CursoService.get_curso_by_id(id)
@@ -150,3 +119,19 @@ def return_user_not_found():
     resp: object = jsonify({'result': output})
     resp.status_code = 500
     return resp
+
+
+def return_curso_not_found():
+    output = {"error": {"msg": "500 error: Curso não encontrado."}}
+    resp: object = jsonify({'result': output})
+    resp.status_code = 500
+    return resp
+
+
+def set_grade_from_data(data):
+    grade = Grade()
+    grade.ano = data['ano']
+    for disc_id in data['disciplinas']:
+        disc: Disciplina = DisciplinaService.get_by_id(disc_id)
+        grade.disciplinas.append(disc)
+    return grade

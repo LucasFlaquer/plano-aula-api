@@ -14,7 +14,7 @@ class Grade(EmbeddedDocument):
         disciplinas_dict = []
         disc: Disciplina
         for disc in self.disciplinas:
-            disciplinas_dict.append(dict(id=str(disc.id), nome=disc.nome))
+            disciplinas_dict.append(dict(id=str(disc.id), nome=disc.nome, semestre=disc.semestre))
         print(disciplinas_dict)
         return dict(ano=self.ano, disciplinas=disciplinas_dict)
 
@@ -34,6 +34,16 @@ class Curso(Document):
         return dict(
             id=str(self.pk),
             nome=self.nome,
+            coordenador=dict(id=str(self.coordenador.pk), nome=self.coordenador.name),
             grades=grades_dict
+
+        )
+
+    def to_dict_first_grade(self):
+        return dict(
+            id=str(self.pk),
+            nome=self.nome,
+            coordenador=dict(id=str(self.coordenador.pk), nome=self.coordenador.name),
+            grades=[self.grades[0].to_dict()]
 
         )
