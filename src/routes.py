@@ -5,7 +5,7 @@ from flask_jwt_extended import create_access_token, create_refresh_token
 from mongoengine import DoesNotExist
 
 from src import app
-from src.controllers import BibliografiaController, UserController
+from src.controllers import BibliografiaController, UserController, CoordenadorController
 from src.controllers import CursoController
 from src.controllers import DisciplinaController
 from src.functions.errors import unauthorized
@@ -70,3 +70,5 @@ app.add_url_rule('/cursos', view_func=CursoController.store_curso, methods=['POS
 app.add_url_rule('/cursos/<id>', view_func=CursoController.show_curso, methods=['GET'])
 app.add_url_rule('/cursos/<id>', view_func=CursoController.update_curso, methods=['PUT'])
 app.add_url_rule('/cursos/<id>', view_func=CursoController.delete_curso, methods=['DELETE'])
+
+app.add_url_rule('/coordenador/curso', view_func=CoordenadorController.get_curso_from_user, methods=['GET'])

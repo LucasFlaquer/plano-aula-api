@@ -16,7 +16,7 @@ def index():
     return jsonify(users)
 
 
-@jwt_required
+#@jwt_required
 def store():
     request_data = request.get_json()
     schema = {

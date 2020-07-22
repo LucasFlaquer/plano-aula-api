@@ -16,6 +16,14 @@ class CursoService:
     def get_all():
         return Curso.objects()
 
+
+    # @staticmethod
+    # def get_by_coord(id_coord):
+    #     #sss
+    #     #
+
+
+
     # @staticmethod
     # def add_disciplinas_to_grade(list_disciplinas):
     #     disciplinas = [],
