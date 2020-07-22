@@ -1,6 +1,8 @@
 from mongoengine import EmbeddedDocument, Document, StringField, ListField, SortedListField, DateTimeField, IntField, \
     ReferenceField, EmbeddedDocumentField
 
+from src.models.Curso import Curso
+from src.models.Disciplina import Disciplina
 from src.models.User import User
 
 
@@ -14,6 +16,7 @@ class Aula(EmbeddedDocument):
 
 class PlanoAula(Document):
     proferssor = ReferenceField(User)
-    disciplina = StringField()
-    curso = StringField()
+    disciplina = ReferenceField(Disciplina)
+    curso = ReferenceField(Curso)
+    cod_turma= StringField
     cronograma = ListField(EmbeddedDocumentField(Aula))
