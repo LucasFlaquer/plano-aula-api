@@ -28,5 +28,6 @@ class User(Document):
             name=self.name,
             email=self.email,
             password=self.password,
-            access=self.access
+            access=self.access,
+            disciplinas_ministradas=self.disciplinas_ministradas
         )

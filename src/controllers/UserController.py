@@ -7,16 +7,26 @@ from mongoengine import DoesNotExist, ValidationError, errors
 
 from src.functions.errors import forbidden
 from src.models.User import User
+from src.services.DisciplinaService import DisciplinaService
 from src.services.UserService import UserService
+
+
+def validate_disciplinas_path(data):
+    v = Validator()
+    v.schema = {
+        'disc_ids': {'required': True, 'type': ['string', 'list']}
+    }
+    if not v.validate(data):
+        return jsonify(error=v.errors), 400
 
 
 @jwt_required
 def index():
-    users = UserService.getUsers()
+    users = UserService.get_all_as_dict()
     return jsonify(users)
 
 
-#@jwt_required
+# @jwt_required
 def store():
     request_data = request.get_json()
     schema = {
@@ -124,3 +134,29 @@ def destroy():
         resp = jsonify({'result': output})
         resp.status_code = 500
         return resp
+
+
+@jwt_required
+def update_disciplinas():
+    data = request.get_json()
+    id_user = request.headers.get('id_user')
+    validate_disciplinas_path(data)
+    user: User = UserService.get_by_id(id_user)
+    if user is None:
+        return_not_found()
+
+    disciplinas = []
+    for disc_id in data.get('disc_ids'):
+        disc = DisciplinaService.get_by_id(disc_id)
+        disciplinas.append(disc)
+
+    user.disciplinas_ministradas = disciplinas
+    user.save()
+    return jsonify(user.to_dict())
+
+
+def return_not_found():
+    output = {"error": {"msg": "500 error: User not found."}}
+    resp = jsonify({'result': output})
+    resp.status_code = 500
+    return resp

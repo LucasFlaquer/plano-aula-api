@@ -18,5 +18,6 @@ class PlanoAula(Document):
     proferssor = ReferenceField(User)
     disciplina = ReferenceField(Disciplina)
     curso = ReferenceField(Curso)
-    cod_turma= StringField
+    cod_turma = StringField()
+    turno= StringField()
     cronograma = ListField(EmbeddedDocumentField(Aula))

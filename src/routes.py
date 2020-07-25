@@ -46,6 +46,7 @@ app.add_url_rule('/users/<id>', view_func=UserController.show, methods=['GET'])
 app.add_url_rule('/users/me', view_func=UserController.loggedUser, methods=['GET'])
 app.add_url_rule('/users/update', view_func=UserController.update, methods=['PUT'])
 app.add_url_rule('/users/<id>', view_func=UserController.destroy, methods=['DELETE'])
+app.add_url_rule('/users/disciplinas', view_func=UserController.update_disciplinas, methods=['PATCH'])
 
 # region BIBLIOGRAFIAS
 app.add_url_rule('/bibliografias', view_func=BibliografiaController.index_bibliografia, methods=['GET'])
@@ -72,3 +73,5 @@ app.add_url_rule('/cursos/<id>', view_func=CursoController.update_curso, methods
 app.add_url_rule('/cursos/<id>', view_func=CursoController.delete_curso, methods=['DELETE'])
 
 app.add_url_rule('/coordenador/curso', view_func=CoordenadorController.get_curso_from_user, methods=['GET'])
+app.add_url_rule('/coordenadores', view_func=CoordenadorController.get_coordenadores, methods=['GET'])
+# app.add_url_rule('/professor/<id>/disciplinas')
