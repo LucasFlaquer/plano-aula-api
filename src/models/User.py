@@ -23,11 +23,15 @@ class User(Document):
             return True
 
     def to_dict(self):
+        disciplinas_dict = []
+        disc: Disciplina
+        for disc in self.disciplinas_ministradas:
+            disciplinas_dict.append(dict(id=str(disc.id), nome=disc.nome, semestre=disc.semestre))
         return dict(
             id=str(self.pk),
             name=self.name,
             email=self.email,
             password=self.password,
             access=self.access,
-            disciplinas_ministradas=self.disciplinas_ministradas
+            disciplinas_ministradas=disciplinas_dict
         )

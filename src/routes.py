@@ -8,6 +8,7 @@ from src import app
 from src.controllers import BibliografiaController, UserController, CoordenadorController
 from src.controllers import CursoController
 from src.controllers import DisciplinaController
+from src.controllers.PlanoAulaController import store_plano_aula
 from src.functions.errors import unauthorized
 from src.models.User import User
 
@@ -75,3 +76,6 @@ app.add_url_rule('/cursos/<id>', view_func=CursoController.delete_curso, methods
 app.add_url_rule('/coordenador/curso', view_func=CoordenadorController.get_curso_from_user, methods=['GET'])
 app.add_url_rule('/coordenadores', view_func=CoordenadorController.get_coordenadores, methods=['GET'])
 # app.add_url_rule('/professor/<id>/disciplinas')
+
+
+app.add_url_rule('/plano-aula', view_func=store_plano_aula, methods=['POST'])
