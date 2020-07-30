@@ -22,14 +22,27 @@ class Aula(EmbeddedDocument):
         self.data = data
         return self
 
+class AtvPeso(EmbeddedDocument):
+    atividade = StringField()
+    peso = IntField()
+
+class Etapa(EmbeddedDocumentField):
+    atividades = ListField(AtvPeso)
 
 class PlanoAula(Document):
-    proferssor = ReferenceField(User)
+    professor = ReferenceField(User)
     disciplina = ReferenceField(Disciplina)
     curso = ReferenceField(Curso)
-    cod_turma = StringField()
+    turma = StringField()
     turno = StringField()
+    data = DateTimeField()
     aulas = SortedListField(EmbeddedDocumentField(Aula), ordering="data")
+    #etapas = ListField(Etapa)
+    ac1 = ListField(AtvPeso, default=[])
+    ac2 = ListField(AtvPeso, default=[])
+    af = ListField(StringField(), default=[])
+    sub = ListField(StringField(), default=[])
+
 
     def to_dict(self):
         aulas_array = []
@@ -38,9 +51,10 @@ class PlanoAula(Document):
 
         return dict(
             id=str(self.pk),
-            professor=str(self.proferssor.pk),
-            disciplina=self.disciplina.nome,
-            curos=self.curso.nome,
+            professor=dict(id=str(self.professor.pk), nome=self.professor.name),
+            disciplina=dict(id=str(self.disciplina.pk), nome=self.disciplina.nome),
+            curso=dict(id=str(self.curso.pk), nome=self.curso.nome),
             turno=self.turno,
+            turma=self.turma,
             aulas=aulas_array
         )
