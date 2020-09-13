@@ -13,3 +13,5 @@ entao rodei os comandos:
 
 - instalar virtualenv `sudo apt install python3-virtualenv`
 - criar virtualenv `virtualenv -p python3 [env_name]`
+
+export FLASK_APP=hello
