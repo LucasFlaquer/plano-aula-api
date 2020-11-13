@@ -7,7 +7,7 @@ app = Flask(__name__)
 
 app.config['MONGODB_SETTINGS'] = {
     'db': 'planoaula',
-    'host': 'mongodb+srv://admin:admin123@cluster0-yrk3h.mongodb.net/planoaula?retryWrites=true&w=majority',
+    'host': 'mongodb+srv://admin:qtY1hCPaXVUrz8zV@cluster0-yrk3h.mongodb.net/planoaula?retryWrites=true&w=majority',
 }
 
 db = MongoEngine(app)
